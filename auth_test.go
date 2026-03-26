@@ -2,7 +2,7 @@ package vercelreceiver
 
 import (
 	"crypto/hmac"
-	"crypto/sha256"
+	"crypto/sha1"
 	"encoding/hex"
 	"net/http"
 	"net/http/httptest"
@@ -76,7 +76,7 @@ func TestVerifySignature(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := verifySignature(tc.secret, tc.body, tc.signature)
+			result := verifySignature(tc.secret, tc.body, tc.signature, "sha1")
 			assert.Equal(t, tc.expected, result, "Signature verification result mismatch")
 		})
 	}
@@ -138,7 +138,7 @@ func TestVerifyRequest(t *testing.T) {
 				req.Header.Set(xVercelSignatureHeader, tc.signature)
 			}
 
-			err := verifyRequest(req, tc.secret, tc.body)
+			err := verifyRequest(req, tc.secret, tc.body, "sha1")
 
 			if tc.expectedErr {
 				require.Error(t, err)
@@ -158,7 +158,7 @@ func TestSignatureHeaderName(t *testing.T) {
 }
 
 func createTestSignature(secret []byte, body []byte) string {
-	mac := hmac.New(sha256.New, secret)
+	mac := hmac.New(sha1.New, secret)
 	mac.Write(body)
 	return hex.EncodeToString(mac.Sum(nil))
 }

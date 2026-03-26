@@ -153,7 +153,7 @@ func (r *vercelReceiver) handleLogs(w http.ResponseWriter, req *http.Request) {
 	// Verify signature if secret is configured
 	secret := r.cfg.GetLogsSecret()
 	if secret != "" {
-		if err := verifyRequest(req, secret, bodyBytes); err != nil {
+		if err := verifyRequest(req, secret, bodyBytes, r.cfg.GetSignatureAlgorithm()); err != nil {
 			r.logger.Warn("Signature verification failed", zap.Error(err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -216,7 +216,7 @@ func (r *vercelReceiver) handleTraces(w http.ResponseWriter, req *http.Request) 
 	// Verify signature if secret is configured
 	secret := r.cfg.GetTracesSecret()
 	if secret != "" {
-		if err := verifyRequest(req, secret, bodyBytes); err != nil {
+		if err := verifyRequest(req, secret, bodyBytes, r.cfg.GetSignatureAlgorithm()); err != nil {
 			r.logger.Warn("Signature verification failed", zap.Error(err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -285,7 +285,7 @@ func (r *vercelReceiver) handleSpeedInsights(w http.ResponseWriter, req *http.Re
 	// Verify signature if secret is configured
 	secret := r.cfg.GetSpeedInsightsSecret()
 	if secret != "" {
-		if err := verifyRequest(req, secret, bodyBytes); err != nil {
+		if err := verifyRequest(req, secret, bodyBytes, r.cfg.GetSignatureAlgorithm()); err != nil {
 			r.logger.Warn("Signature verification failed", zap.Error(err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -350,7 +350,7 @@ func (r *vercelReceiver) handleWebAnalytics(w http.ResponseWriter, req *http.Req
 	// Verify signature if secret is configured
 	secret := r.cfg.GetWebAnalyticsSecret()
 	if secret != "" {
-		if err := verifyRequest(req, secret, bodyBytes); err != nil {
+		if err := verifyRequest(req, secret, bodyBytes, r.cfg.GetSignatureAlgorithm()); err != nil {
 			r.logger.Warn("Signature verification failed", zap.Error(err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return

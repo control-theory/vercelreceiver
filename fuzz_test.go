@@ -173,9 +173,9 @@ func FuzzHandleWebAnalytics(f *testing.F) {
 
 // Fuzz test for signature verification
 func FuzzVerifySignature(f *testing.F) {
-	f.Fuzz(func(t *testing.T, secret []byte, body []byte, signature string) {
+	f.Fuzz(func(t *testing.T, secret []byte, body []byte, signature string, algorithm string) {
 		// Test signature verification with various inputs
-		verifySignature(secret, body, signature)
+		verifySignature(secret, body, signature, algorithm)
 	})
 }
 

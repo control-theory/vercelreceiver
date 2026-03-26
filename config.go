@@ -12,6 +12,9 @@ type Config struct {
 	// Default secret for all endpoints (can be overridden per signal type)
 	Secret string `mapstructure:"secret"`
 
+	// Default signature algorithm for all endpoints (can be overridden per signal type)
+	SignatureAlgorithm string `mapstructure:"signature_algorithm"`
+
 	// Per-signal configuration (optional overrides for routes and secrets)
 	Logs          SignalConfig `mapstructure:"logs"`
 	Traces        SignalConfig `mapstructure:"traces"`
@@ -49,7 +52,35 @@ func (cfg *Config) Validate() error {
 		cfg.WebAnalytics.Route = "/analytics"
 	}
 
+	// Set default signature algorithm if not provided
+	if cfg.SignatureAlgorithm == "" {
+		cfg.SignatureAlgorithm = "sha1"
+	}
+
+	// Validate allowed values for signature algorithm
+	if !isValidSignatureAlgorithm(cfg.SignatureAlgorithm) {
+		return fmt.Errorf("invalid signature_algorithm: %s", cfg.SignatureAlgorithm)
+	}
+
 	return nil
+}
+
+// isValidSignatureAlgorithm checks if the algorithm is allowed
+func isValidSignatureAlgorithm(algo string) bool {
+	switch algo {
+	case "sha1", "sha256":
+		return true
+	default:
+		return false
+	}
+}
+
+// GetSignatureAlgorithm returns the signature algorithm (global for all signals)
+func (cfg *Config) GetSignatureAlgorithm() string {
+	if cfg.SignatureAlgorithm == "" {
+		return "sha1"
+	}
+	return cfg.SignatureAlgorithm
 }
 
 // GetLogsSecret returns the secret for logs (per-signal override or default)

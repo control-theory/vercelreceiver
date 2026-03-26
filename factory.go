@@ -93,12 +93,13 @@ func createMetricsReceiver(
 }
 
 func createDefaultConfig() component.Config {
-	return &Config{
-		Endpoint:      ":8080",
-		Secret:        "", // Default secret (empty means no auth by default)
-		Logs:          SignalConfig{},
-		Traces:        SignalConfig{},
-		SpeedInsights: SignalConfig{},
-		WebAnalytics:  SignalConfig{},
-	}
+	   return &Config{
+			   Endpoint:           ":8080",
+			   Secret:             "", // Default secret (empty means no auth by default)
+			   SignatureAlgorithm: "sha1", // Default to sha1
+			   Logs:               SignalConfig{},
+			   Traces:             SignalConfig{},
+			   SpeedInsights:      SignalConfig{},
+			   WebAnalytics:       SignalConfig{},
+	   }
 }
