@@ -34,7 +34,7 @@ The easiest way to publish is to create a Git tag, which automatically triggers 
    ```
 
 3. **Monitor the workflow:**
-   - Check the [GitHub Actions](https://github.com/getlawrence/vercelreceiver/actions) tab
+   - Check the [GitHub Actions](https://github.com/control-theory/vercelreceiver/actions) tab
    - The workflow will automatically:
      - Run all tests
      - Create a GitHub release with binaries
@@ -45,7 +45,7 @@ The easiest way to publish is to create a Git tag, which automatically triggers 
 
 You can also manually trigger the publishing workflow:
 
-1. Go to the [Publish Module workflow](https://github.com/getlawrence/vercelreceiver/actions/workflows/publish-module.yml)
+1. Go to the [Publish Module workflow](https://github.com/control-theory/vercelreceiver/actions/workflows/publish-module.yml)
 2. Click "Run workflow"
 3. Enter the version tag (e.g., `v1.0.0`)
 4. Optionally enable "Force" to republish an existing version
@@ -103,13 +103,13 @@ The automated workflow performs these steps:
 
 Once published, your module will be available at:
 
-- **Module URL:** https://pkg.go.dev/github.com/getlawrence/vercelreceiver@v1.0.0
-- **Documentation:** https://pkg.go.dev/github.com/getlawrence/vercelreceiver@v1.0.0
+- **Module URL:** https://pkg.go.dev/github.com/control-theory/vercelreceiver@v1.0.0
+- **Documentation:** https://pkg.go.dev/github.com/control-theory/vercelreceiver@v1.0.0
 
 Users can install your module with:
 
 ```bash
-go get github.com/getlawrence/vercelreceiver@v1.0.0
+go get github.com/control-theory/vercelreceiver@v1.0.0
 ```
 
 ## Troubleshooting
@@ -170,4 +170,4 @@ If tests fail during publishing:
 - [Go Module Publishing Documentation](https://go.dev/doc/modules/publishing)
 - [Semantic Versioning](https://semver.org/)
 - [pkg.go.dev](https://pkg.go.dev)
-- [GitHub Actions](https://github.com/getlawrence/vercelreceiver/actions)
+- [GitHub Actions](https://github.com/control-theory/vercelreceiver/actions)
