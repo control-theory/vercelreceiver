@@ -1,4 +1,4 @@
-module github.com/getlawrence/vercelreceiver
+module github.com/control-theory/vercelreceiver
 
 go 1.24.6
 

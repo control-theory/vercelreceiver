@@ -125,7 +125,7 @@ jobs:
       run: |
         VERSION="${{ steps.get_version.outputs.VERSION }}"
         echo "Checking if module version $VERSION is already published..."
-        if go list -m github.com/getlawrence/vercelreceiver@$VERSION >/dev/null 2>&1; then
+        if go list -m github.com/control-theory/vercelreceiver@$VERSION >/dev/null 2>&1; then
           echo "Module version $VERSION is already published. Skipping publication."
           exit 0
         else
@@ -141,10 +141,10 @@ jobs:
         export GOPROXY=proxy.golang.org
         
         # Trigger module indexing by listing the module
-        go list -m github.com/getlawrence/vercelreceiver@$VERSION
+        go list -m github.com/control-theory/vercelreceiver@$VERSION
         
         echo "Module publication triggered successfully!"
-        echo "The module will be available at: https://pkg.go.dev/github.com/getlawrence/vercelreceiver@$VERSION"
+        echo "The module will be available at: https://pkg.go.dev/github.com/control-theory/vercelreceiver@$VERSION"
         echo "Note: It may take a few minutes for the module to appear on pkg.go.dev"
         
     - name: Verify module publication
@@ -154,9 +154,9 @@ jobs:
         
         # Wait up to 5 minutes for the module to be indexed
         for i in {1..30}; do
-          if go list -m github.com/getlawrence/vercelreceiver@$VERSION >/dev/null 2>&1; then
+          if go list -m github.com/control-theory/vercelreceiver@$VERSION >/dev/null 2>&1; then
             echo "✅ Module successfully published and indexed!"
-            echo "📦 Module URL: https://pkg.go.dev/github.com/getlawrence/vercelreceiver@$VERSION"
+            echo "📦 Module URL: https://pkg.go.dev/github.com/control-theory/vercelreceiver@$VERSION"
             break
           else
             echo "⏳ Waiting for module to be indexed... (attempt $i/30)"
@@ -165,9 +165,9 @@ jobs:
         done
         
         # Final verification
-        if go list -m github.com/getlawrence/vercelreceiver@$VERSION >/dev/null 2>&1; then
+        if go list -m github.com/control-theory/vercelreceiver@$VERSION >/dev/null 2>&1; then
           echo "✅ Final verification: Module is published and accessible"
         else
-          echo "⚠️  Module publication may still be in progress. Check https://pkg.go.dev/github.com/getlawrence/vercelreceiver@$VERSION"
+          echo "⚠️  Module publication may still be in progress. Check https://pkg.go.dev/github.com/control-theory/vercelreceiver@$VERSION"
         fi
         

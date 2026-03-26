@@ -39,7 +39,7 @@ dist:
 
 receivers:
   # Include the Vercel receiver from the published module
-  - gomod: github.com/getlawrence/vercelreceiver v0.1.0
+  - gomod: github.com/control-theory/vercelreceiver v0.1.0
   
   # Add other receivers as needed
   # - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.138.0
@@ -76,7 +76,7 @@ Once you have your builder configuration:
 
 ### Version Compatibility
 
-Make sure to use a compatible version of the receiver that matches your OpenTelemetry Collector version. The receiver should be compatible with collector versions v0.138.0 and later. Check the [releases](https://github.com/getlawrence/vercelreceiver/releases) page for available versions.
+Make sure to use a compatible version of the receiver that matches your OpenTelemetry Collector version. The receiver should be compatible with collector versions v0.138.0 and later. Check the [releases](https://github.com/control-theory/vercelreceiver/releases) page for available versions.
 
 For more information about OCB, see the [OpenTelemetry Collector Builder documentation](https://github.com/open-telemetry/opentelemetry-collector/tree/main/cmd/builder).
 

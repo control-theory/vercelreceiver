@@ -7,11 +7,11 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix(github.com/getlawrence/vercelreceiver)
+      - prefix(github.com/control-theory/vercelreceiver)
   gofmt:
     simplify: true
   goimports:
-    local-prefixes: github.com/getlawrence/vercelreceiver
+    local-prefixes: github.com/control-theory/vercelreceiver
   gocyclo:
     min-complexity: 50
   dupl:
