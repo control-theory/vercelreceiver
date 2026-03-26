@@ -76,11 +76,13 @@ func (s *httpServer) withSignatureAuth(secret string, handler http.HandlerFunc) 
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		r.Body.Close()
+		// Close body and ignore error (intentionally)
+		_ = r.Body.Close()
 		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
-		// Verify signature
-		if err := verifyRequest(r, secret, bodyBytes); err != nil {
+		// Verify signature using global algorithm from config
+		algorithm := s.cfg.GetSignatureAlgorithm()
+		if err := verifyRequest(r, secret, bodyBytes, algorithm); err != nil {
 			s.logger.Warn("Signature verification failed", zap.Error(err))
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return

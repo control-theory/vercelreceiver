@@ -3,7 +3,7 @@ package vercelreceiver
 import (
 	"bytes"
 	"crypto/hmac"
-	"crypto/sha256"
+	"crypto/sha1"
 	"encoding/hex"
 	"errors"
 	"io"
@@ -28,7 +28,7 @@ const testSecret = "test-secret-12345"
 
 // Helper function to create a valid signature
 func createSignature(secret []byte, body []byte) string {
-	mac := hmac.New(sha256.New, secret)
+	mac := hmac.New(sha1.New, secret)
 	mac.Write(body)
 	return hex.EncodeToString(mac.Sum(nil))
 }
