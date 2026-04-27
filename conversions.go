@@ -18,8 +18,13 @@ func convertVercelLogsToPdata(logs []vercelLog) plog.Logs {
 		scopeLogs := rl.ScopeLogs().AppendEmpty()
 		lr := scopeLogs.LogRecords().AppendEmpty()
 
-		// Set timestamp
-		lr.SetTimestamp(pcommon.NewTimestampFromTime(time.Unix(0, log.Timestamp*int64(time.Millisecond))))
+		// Always set ObservedTimestamp so downstream consumers can fall
+		// back when log.Timestamp is missing/zero. Otherwise a zero
+		// log.Timestamp would silently produce a 1970-01-01 record.
+		lr.SetObservedTimestamp(pcommon.NewTimestampFromTime(time.Now()))
+		if log.Timestamp != 0 {
+			lr.SetTimestamp(pcommon.NewTimestampFromTime(time.Unix(0, log.Timestamp*int64(time.Millisecond))))
+		}
 
 		// Set severity
 		switch log.Level {
@@ -347,7 +352,10 @@ func convertWebAnalyticsToPdata(events []webAnalyticsEvent) plog.Logs {
 		lr := scopeLogs.LogRecords().AppendEmpty()
 
 		// Set timestamp
-		lr.SetTimestamp(pcommon.NewTimestampFromTime(time.Unix(0, event.Timestamp*int64(time.Millisecond))))
+		lr.SetObservedTimestamp(pcommon.NewTimestampFromTime(time.Now()))
+		if event.Timestamp != 0 {
+			lr.SetTimestamp(pcommon.NewTimestampFromTime(time.Unix(0, event.Timestamp*int64(time.Millisecond))))
+		}
 
 		// Set severity
 		lr.SetSeverityNumber(plog.SeverityNumberInfo)
