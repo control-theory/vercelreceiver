@@ -1,0 +1,70 @@
+# Destination: <each code repo> -> .github/workflows/codegraph.yml
+#
+# Pushes the repository code graph to BOTH watchdog orgs on every merge to the
+# default branch, plus a weekly refresh so low-traffic repos stay inside the
+# snapshot retention window.
+#
+# Both pushes are fail-open: the dstl8-codegraph action always exits 0, so a graph
+# problem can never break a build or block a merge. Failures surface as workflow
+# annotations -- check those if graphs stop arriving.
+#
+# Requires, at organization level:
+#   variable  DSTL8_STAGEWD_API_URL   https://o9sa30agw.app.dstl8.ai
+#   secret    DSTL8_STAGEWD_TOKEN     StageWD dstl8_ service token
+#   variable  DSTL8_PRODWD_API_URL    https://o5fnr8q65.wd.dstl8.ai
+#   secret    DSTL8_PRODWD_TOKEN      ProdWD dstl8_ service token
+#
+# The two watchdog orgs, confirmed 2026-08-25:
+#   StageWD  o9sa30agw.app.dstl8.ai   runs in the PROD cluster
+#   ProdWD   o5fnr8q65.wd.dstl8.ai    runs in the WATCHDOG cluster
+#
+# The base domain differs per cluster and this is easy to get wrong: the pattern
+# <org>.app.dstl8.ai in the public code-graph docs holds only for the prod cluster.
+# The watchdog cluster is wd.dstl8.ai, a separate ALB entirely. Using the app.
+# domain for a watchdog-cluster org reaches the prod ingress, which has no rule for
+# that host, and returns an HTML 404 -- not a JSON API error, so it does not look
+# like an auth or API problem at all.
+#
+# Note the existing DSTL8_EVENT_API_URL is already https://o9sa30agw.app.dstl8.ai,
+# i.e. StageWD. The 16 repositories posting CI events today therefore send them to
+# StageWD only; ProdWD receives none. Named values are used here rather than reusing
+# DSTL8_EVENT_* so that no workflow ever holds one org's token under a name that
+# reads like another's -- a wrong-tenant push writes one customer's code graph into
+# another org.
+name: dstl8 code graph
+
+on:
+  push:
+    branches: [main]          # default branch only -- the server rejects others
+  schedule:
+    - cron: "17 6 * * 1"      # weekly refresh keeps low-traffic repos current
+  workflow_dispatch:
+
+concurrency:
+  group: codegraph-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  codegraph:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 50     # enough history to diff against the last pushed snapshot
+
+      - name: Push to StageWD
+        uses: control-theory/deploy/.github/actions/dstl8-codegraph@main
+        with:
+          label: StageWD
+          api-url: ${{ vars.DSTL8_STAGEWD_API_URL }}
+          token: ${{ secrets.DSTL8_STAGEWD_TOKEN }}
+
+      - name: Push to ProdWD
+        uses: control-theory/deploy/.github/actions/dstl8-codegraph@main
+        with:
+          label: ProdWD
+          api-url: ${{ vars.DSTL8_PRODWD_API_URL }}
+          token: ${{ secrets.DSTL8_PRODWD_TOKEN }}
