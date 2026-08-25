@@ -25,12 +25,14 @@
 # that host, and returns an HTML 404 -- not a JSON API error, so it does not look
 # like an auth or API problem at all.
 #
-# Note the existing DSTL8_EVENT_API_URL is already https://o9sa30agw.app.dstl8.ai,
-# i.e. StageWD. The 16 repositories posting CI events today therefore send them to
-# StageWD only; ProdWD receives none. Named values are used here rather than reusing
-# DSTL8_EVENT_* so that no workflow ever holds one org's token under a name that
-# reads like another's -- a wrong-tenant push writes one customer's code graph into
-# another org.
+# The two orgs watch different things, deliberately: CI events go to StageWD via
+# DSTL8_EVENT_API_URL, and production deploy events reach ProdWD from ship-prod.
+# This workflow sends the code graph to both, because the graph describes the code
+# rather than an environment.
+#
+# Named values are used here rather than reusing DSTL8_EVENT_* so that no workflow
+# ever holds one org's token under a name that reads like another's -- a wrong-tenant
+# push writes one customer's code graph into another org.
 name: dstl8 code graph
 
 on:
